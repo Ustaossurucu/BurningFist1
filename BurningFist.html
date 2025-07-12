@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BurningFist - Tarayıcı</title>
+  <style>
+    body, html {
+      margin: 0; padding: 0; height: 100vh; display: flex; flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      background: #b03030; padding: 12px; font-weight: bold; font-size: 22px; color: white; text-align: center;
+    }
+    #navBar {
+      display: flex; gap: 8px; padding: 8px; background: #222; align-items: center;
+    }
+    #urlInput {
+      flex: 1; padding: 8px; font-size: 16px; border: none; border-radius: 5px;
+    }
+    button {
+      background: #b03030; color: white; border: none; padding: 8px 12px; cursor: pointer; border-radius: 5px; font-weight: bold;
+    }
+    button:hover {
+      background: #802020;
+    }
+    iframe {
+      flex: 1; border: none; width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>BurningFist</header>
+  <div id="navBar">
+    <input type="text" id="urlInput" placeholder="Site adresi veya YouTube video (örnek: dQw4w9WgXcQ veya https://...)" />
+    <button id="goBtn">Git</button>
+  </div>
+  <iframe id="browser" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+  <script>
+    const urlInput = document.getElementById('urlInput');
+    const goBtn = document.getElementById('goBtn');
+    const browser = document.getElementById('browser');
+
+    function normalizeUrl(input) {
+      input = input.trim();
+
+      // YouTube kısa ID girilmişse
+      if (/^[a-zA-Z0-9_-]{11}$/.test(input)) {
+        return `https://www.youtube.com/embed/${input}`;
+      }
+
+      // YouTube tam URL'si girilmişse
+      if (input.includes("youtube.com/watch?v=")) {
+        const id = new URL(input).searchParams.get("v");
+        return `https://www.youtube.com/embed/${id}`;
+      }
+
+      // Normal web adresi
+      if (!/^https?:\/\//.test(input)) {
+        input = 'https://' + input;
+      }
+
+      return input;
+    }
+
+    goBtn.onclick = () => {
+      const url = normalizeUrl(urlInput.value);
+      browser.src = url;
+    };
+
+    urlInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') goBtn.click();
+    });
+  </script>
+</body>
+  </html>
